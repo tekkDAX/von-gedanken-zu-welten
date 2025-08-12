@@ -28,8 +28,8 @@ const Header = () => (
 const Footer = () => (
     <footer className="main-footer">
         <p>
-            Inhalte lizenziert unter <a href="https://github.com/tekkDAX/tekkdax.github.io/blob/main/LICENSE-CC-BY-NC-ND.md" target="_blank" rel="noopener noreferrer" aria-label="Creative Commons Lizenz">CC BY-NC-ND 4.0</a>.
-            Für kommerzielle Nutzung siehe <a href="https://github.com/tekkDAX/tekkdax.github.io/blob/main/license-commercial.md" target="_blank" rel="noopener noreferrer" aria-label="Kommerzielle Lizenz">Lizenzdetails</a>.
+            Inhalte lizenziert unter <a href="https://github.com/tekkDAX/von-gedanken-zu-welten/blob/main/LICENSE-CC-BY-NC-ND.md" target="_blank" rel="noopener noreferrer" aria-label="Creative Commons Lizenz">CC BY-NC-ND 4.0</a>.
+            Für kommerzielle Nutzung siehe <a href="https://github.com/tekkDAX/von-gedanken-zu-welten/blob/main/license-commercial.md" target="_blank" rel="noopener noreferrer" aria-label="Kommerzielle Lizenz">Lizenzdetails</a>.
             <br />Der Quellcode der Webseite steht unter der MIT-Lizenz.
         </p>
         <p>&copy; {new Date().getFullYear()} René andy Schlöffel. Alle Rechte vorbehalten.</p>

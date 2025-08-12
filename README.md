@@ -2,7 +2,7 @@
 
 Dieses Repository enthält den Quellcode für die offizielle Webseite zur 'Von Gedanken zu Welten'-Methode. Ein Manifest für die Architektur des eigenen Geistes von René andy Schlöffel (Evil DaX).
 
-**➡️ [Zur Live-Webseite](https://tekkdax.github.io/)**
+**➡️ [Zur Live-Webseite](https://tekkdax.github.io/von-gedanken-zu-welten/)**
 
 ---
 
