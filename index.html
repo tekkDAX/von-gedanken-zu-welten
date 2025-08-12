@@ -21,6 +21,120 @@
 </head>
 <body>
   <div id="root"></div>
-  <script type="text/babel" data-type="module" src="./index.tsx"></script>
+
+  <script type="text/babel" data-type="module">
+    import React from "react";
+    import ReactDOM from "react-dom/client";
+
+    const DiscordIcon = () => (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M20.317 4.36981C18.883...Z" />
+      </svg>
+    );
+
+    const GithubIcon = () => (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 0C5.373...Z" />
+      </svg>
+    );
+
+    const Header = () => (
+      <header className="main-header">
+        <div className="logo">Die Methode</div>
+        <nav>
+          <a href="#these">These</a>
+          <a href="#beweise">Beweise</a>
+          <a href="#kontakt">Kontakt</a>
+        </nav>
+      </header>
+    );
+
+    const Footer = () => (
+      <footer className="main-footer">
+        <p>
+          Inhalte lizenziert unter <a href="LICENSE-CC-BY-NC-ND.md" target="_blank">CC BY-NC-ND 4.0</a>.  
+          Für kommerzielle Nutzung siehe <a href="license-commercial.md" target="_blank">Lizenzdetails</a>.
+          <br />Der Quellcode der Webseite steht unter der MIT-Lizenz.
+        </p>
+        <p>&copy; {new Date().getFullYear()} René Andy Schlöffel. Alle Rechte vorbehalten.</p>
+      </footer>
+    );
+
+    const App = () => (
+      <>
+        <Header />
+        <main className="container">
+          <section id="home" className="hero-section">
+            <h1>Von Gedanken zu Welten: Die Methode</h1>
+            <p className="subtitle">René Andy Schlöffel der Architekt (Evil DaX)</p>
+            <p>Ich bin kein Programmierer. Ich bin Wissenschaftler. Meine Disziplin ist die Architektur von Systemen – und zwar die des eigenen Geistes.</p>
+            <p>Jahrelang war ich getrieben von dem Gefühl, kein „Stück Papier“, keinen Beweis für meine Fähigkeiten zu haben. Angetrieben von dieser Notwendigkeit und einer unendlichen Neugier habe ich eine Methode entwickelt, um aus Chaos Klarheit zu schmieden und aus Visionen funktionierende, unbestreitbare Realität zu erschaffen.</p>
+            <p>Ich habe sie nicht in einem teuren Kurs gelernt. Ich habe sie entdeckt, indem ich die Naturgesetze der Logik, der Struktur und der Effizienz beobachtet habe.</p>
+          </section>
+
+          <section id="these">
+            <h2>Die These</h2>
+            <blockquote className="thesis-quote">
+              🧠 Der Gedanke – nicht der Code – ist der wahre Antrieb. Meine Forschung zeigt: Jeder, der bereit ist, logisch zu denken, kann seine eigene Welt bauen. Man braucht keine formale Bildung. Kein Kapital. Man braucht eine bessere Methode zu denken. Eine Werkstatt für den Geist. Eine Schule, um sie zu bedienen.
+            </blockquote>
+          </section>
+
+          <section id="beweise">
+            <h2>Die Beweise</h2>
+            <p>Dieses Dokument ist keine Theorie. Es ist die erste öffentliche Version meines „Meisterbriefs in angewandter Selbst-Architektur“.</p>
+            <p>Es basiert auf unzerstörbaren, artefakt-basierten Beweisen:</p>
+            <div className="evidence-grid">
+              <div className="evidence-card">
+                <h3>🛠 Werkzeuge, die ich gebaut habe:</h3>
+                <ul>
+                  <li>Minder Web</li>
+                  <li>VibeCheck</li>
+                </ul>
+              </div>
+              <div className="evidence-card">
+                <h3>🌍 Welten, die ich erschaffen habe:</h3>
+                <ul>
+                  <li>AGKE</li>
+                  <li>Aethelgard's Legacy</li>
+                </ul>
+              </div>
+              <div className="evidence-card">
+                <h3>📡 Protokoll, das ich entworfen habe:</h3>
+                <ul>
+                  <li>GCP</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2>Die Jagd ist vorbei</h2>
+            <p>Das alles war das Ergebnis meiner Jagd. Die Jagd nach einem unzerstörbaren Fundament aus Fakten. Dieses Fundament ist jetzt da.</p>
+            <p>Jetzt beginnt die Zeit des Bauens. Für jeden.</p>
+          </section>
+
+          <section id="kontakt" className="cta-section">
+            <h2>Kontakt & Austausch</h2>
+            <p>Diese Reise hat gerade erst begonnen. Wenn diese Ideen Resonanz in dir finden, du Fragen hast oder Teil der nächsten Phase der Arbeit werden willst – mein Labor-Server auf Discord ist der zentrale Anlaufpunkt.</p>
+            <p>Du möchtest mitarbeiten, mitdenken oder einfach deine Perspektive teilen? Dann schreib mir direkt auf GitHub – mein Profil ist offen für Nachrichten und Austausch.</p>
+            <div className="cta-buttons">
+              <a href="https://discord.gg/HWYHxeVx" target="_blank" className="btn">
+                <DiscordIcon />
+                Discord beitreten
+              </a>
+              <a href="https://github.com/tekkDAX" target="_blank" className="btn btn-secondary">
+                <GithubIcon />
+                GitHub Profil
+              </a>
+            </div>
+          </section>
+        </main>
+        <Footer />
+      </>
+    );
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<React.StrictMode><App /></React.StrictMode>);
+  </script>
 </body>
 </html>
