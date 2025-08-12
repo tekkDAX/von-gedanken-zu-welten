@@ -1,4 +1,4 @@
-/* Grundfarben & Fonts */
+/* === Grundfarben & Fonts === */
 :root {
   --bg: #0f0f0f;
   --panel: #1a1a1a;
@@ -26,7 +26,7 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Header */
+/* === Header === */
 .main-header {
   display: flex;
   justify-content: space-between;
@@ -49,20 +49,30 @@ nav a {
   font-weight: 600;
 }
 
-/* Container */
+/* === Container === */
 .container {
   max-width: 960px;
   margin: 2rem auto;
   padding: 0 1rem;
 }
 
-/* Hero Section */
-.hero-section {
+/* === Panels / Fenster === */
+section {
   background-color: var(--panel);
   padding: 2rem;
+  margin-bottom: 2rem;
   border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0, 255, 224, 0.1);
+  box-shadow: 0 0 20px rgba(0, 255, 224, 0.05);
+  border: 1px solid var(--border);
 }
+section h2 {
+  font-family: var(--font-title);
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: var(--accent);
+}
+
+/* === Hero Section === */
 .hero-section h1 {
   font-family: var(--font-title);
   font-size: 2.5rem;
@@ -74,7 +84,7 @@ nav a {
   margin-bottom: 1rem;
 }
 
-/* Thesis */
+/* === These === */
 .thesis-quote {
   background-color: var(--panel);
   border-left: 4px solid var(--accent);
@@ -84,7 +94,7 @@ nav a {
   box-shadow: 0 0 10px rgba(0, 255, 224, 0.05);
 }
 
-/* Evidence Grid */
+/* === Beweise === */
 .evidence-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -102,10 +112,16 @@ nav a {
   margin-top: 0;
   color: var(--accent);
 }
+.evidence-card ul {
+  padding-left: 1.2rem;
+  margin: 0.5rem 0 0;
+}
+.evidence-card li {
+  margin-bottom: 0.5rem;
+}
 
-/* CTA Section */
+/* === CTA === */
 .cta-section {
-  margin-top: 3rem;
   text-align: center;
 }
 .cta-buttons {
@@ -139,7 +155,7 @@ nav a {
   color: #000;
 }
 
-/* Footer */
+/* === Footer === */
 .main-footer {
   margin-top: 4rem;
   padding: 2rem;
@@ -149,3 +165,4 @@ nav a {
   font-size: 0.9rem;
   color: var(--muted);
 }
+
