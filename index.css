@@ -3,6 +3,7 @@
   --bg: #0f0f0f;
   --panel: #1a1a1a;
   --accent: #00ffe0;
+  --blue: #00aaff;
   --text: #e0e0e0;
   --muted: #888;
   --border: #333;
@@ -110,7 +111,11 @@ section h2 {
 }
 .evidence-card h3 {
   margin-top: 0;
-  color: var(--accent);
+  color: var(--blue);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 .evidence-card ul {
   padding-left: 1.2rem;
@@ -165,4 +170,3 @@ section h2 {
   font-size: 0.9rem;
   color: var(--muted);
 }
-
