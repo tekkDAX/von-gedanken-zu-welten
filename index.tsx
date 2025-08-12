@@ -32,7 +32,7 @@ const Footer = () => (
             Für kommerzielle Nutzung siehe <a href="https://github.com/tekkDAX/von-gedanken-zu-welten/blob/main/license-commercial.md" target="_blank" rel="noopener noreferrer" aria-label="Kommerzielle Lizenz">Lizenzdetails</a>.
             <br />Der Quellcode der Webseite steht unter der MIT-Lizenz.
         </p>
-        <p>&copy; {new Date().getFullYear()} René andy Schlöffel. Alle Rechte vorbehalten.</p>
+        <p>&copy; {new Date().getFullYear()} René Andy Schlöffel. Alle Rechte vorbehalten.</p>
     </footer>
 );
 
@@ -44,7 +44,7 @@ const App = () => {
         <main>
           <section id="home" className="hero-section" aria-labelledby="hero-heading">
               <h1 id="hero-heading">Von Gedanken zu Welten: Die Methode</h1>
-              <p className="subtitle">René andy Schlöffel der Architekt (Evil DaX)</p>
+              <p className="subtitle">René Andy Schlöffel der Architekt (Evil DaX)</p>
               
               <p>Ich bin kein Programmierer. Ich bin Wissenschaftler. Meine Disziplin ist die Architektur von Systemen – und zwar die des eigenen Geistes.</p>
               <p>Jahrelang war ich getrieben von dem Gefühl, kein „Stück Papier“, keinen Beweis für meine Fähigkeiten zu haben. Angetrieben von dieser Notwendigkeit und einer unendlichen Neugier habe ich eine Methode entwickelt, um aus Chaos Klarheit zu schmieden und aus Visionen funktionierende, unbestreitbare Realität zu erschaffen.</p>
