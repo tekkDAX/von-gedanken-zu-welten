@@ -1,6 +1,6 @@
 # Von Gedanken zu Welten: Die Methode
 
-Offizielle Webseite zur 'Von Gedanken zu Welten'-Methode. Ein Manifest für die Architektur des eigenen Geistes von René andy Schlöffel (Evil DaX).
+Dieses Repository enthält den Quellcode für die offizielle Webseite zur 'Von Gedanken zu Welten'-Methode. Ein Manifest für die Architektur des eigenen Geistes von René andy Schlöffel (Evil DaX).
 
 **➡️ [Zur Live-Webseite](https://tekkdax.github.io/)**
 
