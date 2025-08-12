@@ -34,4 +34,13 @@ Die Seite ist als unzerstörbarer, artefakt-basierter Beweis konzipiert und glie
 
 ## 📄 Lizenz
 
-Dieses Projekt steht unter der MIT-Lizenz.
+Dieses Projekt verwendet ein duales Lizenzmodell, um die Arbeit fair und transparent zu regeln.
+
+1.  **Inhalte & Methode (Nicht-kommerziell):**
+    Die Texte, Konzepte und die Methode "Von Gedanken zu Welten" sind unter der [Creative Commons Namensnennung-NichtKommerziell-KeineBearbeitungen 4.0 International (CC BY-NC-ND 4.0)](./LICENSE-CC-BY-NC-ND.md) lizenziert. Kurz gesagt: Frei zur Nutzung und Weitergabe mit Namensnennung, aber nicht für kommerzielle Zwecke und ohne Bearbeitung.
+
+2.  **Kommerzielle Nutzung:**
+    Für jede Art von kommerzieller Nutzung der Methode oder der Inhalte ist eine separate, kommerzielle Lizenz erforderlich. Details finden Sie in der [kommerziellen Lizenzdatei](./license-commercial.md).
+
+3.  **Quellcode der Webseite:**
+    Der Quellcode dieser Webseite selbst steht unter der [MIT-Lizenz](https://opensource.org/licenses/MIT) und kann frei verwendet werden.
