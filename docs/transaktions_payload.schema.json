@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/transaktions_payload.schema.json",
+  "title": "Transaktions-Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "korrespondierender_laufzettel_betreff",
+    "art_des_inhalts",
+    "fokus_domaene",
+    "metadata_des_pakets",
+    "haupt_inhalt"
+  ],
+  "properties": {
+    "version": { "type": "string", "minLength": 1 },
+    "korrespondierender_laufzettel_betreff": { "type": "string", "minLength": 1 },
+    "art_des_inhalts": { "type": "string", "minLength": 1 },
+    "fokus_domaene": { "type": "string", "minLength": 1 },
+    "kanonische_referenz_id": { "type": "string" },
+    "metadata_des_pakets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["datum_iso8601", "projektname"],
+      "properties": {
+        "datum_iso8601": { "type": "string", "format": "date-time" },
+        "projektname": { "type": "string", "minLength": 1 },
+        "teilnehmer": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "ursprung": { "type": "string" },
+        "version_des_protokolls": { "type": "string" }
+      }
+    },
+    "haupt_inhalt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sitzungs_zusammenfassung_text"],
+      "properties": {
+        "sitzungs_zusammenfassung_text": { "type": "string", "minLength": 1 },
+        "detaillierte_struktur_json": {},
+        "quellcode_artefakte": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["dateiname", "sprache", "zweck", "code"],
+            "properties": {
+              "dateiname": { "type": "string", "minLength": 1 },
+              "sprache": { "type": "string", "minLength": 1 },
+              "zweck": { "type": "string" },
+              "code": { "type": "string" }
+            }
+          }
+        },
+        "referenzen": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["url"],
+            "properties": {
+              "url": { "type": "string", "format": "uri" },
+              "beschreibung": { "type": "string" }
+            }
+          }
+        },
+        "zusatz_informationen": { "type": "string" }
+      }
+    }
+  }
+}

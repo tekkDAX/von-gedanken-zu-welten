@@ -1,0 +1,40 @@
+{
+  "version": "v1",
+  "korrespondierender_laufzettel_betreff": "Werkstatt: Frontend-Mock & Upload UI",
+  "art_des_inhalts": "Dokumentation",
+  "fokus_domaene": "Modular-Workshop-System",
+  "kanonische_referenz_id": "werkstatt-protokoll-v1",
+  "metadata_des_pakets": {
+    "datum_iso8601": "2025-08-17T17:55:00Z",
+    "projektname": "werkstatt",
+    "teilnehmer": ["User", "Cascade"],
+    "ursprung": "Chat-Session",
+    "version_des_protokolls": "v0.01/v2.4"
+  },
+  "haupt_inhalt": {
+    "sitzungs_zusammenfassung_text": "Frontend um Mock-API erweitert, Files-UI eingebaut, .env.example und README ergänzt; Ziel: Frontend-first Demo ohne Backend.",
+    "detaillierte_struktur_json": {
+      "features": ["Mock getPlugins/runCommand", "Upload/Download UI", "README-Abschnitt"],
+      "env": {"VITE_USE_MOCK": true, "VITE_API_BASE": "http://localhost:8000"}
+    },
+    "quellcode_artefakte": [
+      {
+        "dateiname": "web/src/services/api.ts",
+        "sprache": "TypeScript",
+        "zweck": "Mock-API & Files-Client",
+        "code": "// Auszug: USE_MOCK, mock.getPlugins(), uploadFile(), getDownloadUrl()"
+      },
+      {
+        "dateiname": "web/src/routes/App.tsx",
+        "sprache": "TSX",
+        "zweck": "Files UI",
+        "code": "// Auszug: <section>Files</section> mit Upload und Links"
+      }
+    ],
+    "referenzen": [
+      {"url": "./../../README.md", "beschreibung": "Projekt-README"},
+      {"url": "../transaktions_payload.schema.json", "beschreibung": "JSON-Schema"}
+    ],
+    "zusatz_informationen": "Redundanzen vermeiden – künftige Updates referenzieren diese kanonische ID."
+  }
+}
