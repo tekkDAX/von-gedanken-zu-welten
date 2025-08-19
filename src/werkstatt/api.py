@@ -150,6 +150,57 @@ def create_app() -> FastAPI:
             ).fetchall()
         return [ItemOut(**dict(r)) for r in rows]
 
+    # --- Simple search over items (LIKE) ---
+    @app.get("/db/search", response_model=List[ItemOut])
+    def search_items(q: str, limit: int = 50, offset: int = 0) -> List[ItemOut]:
+        term = f"%{q}%"
+        if limit < 1:
+            limit = 1
+        if limit > 500:
+            limit = 500
+        with _get_conn() as conn:
+            rows = conn.execute(
+                """
+                SELECT id, key, value, created_at
+                FROM items
+                WHERE key LIKE ? OR value LIKE ?
+                ORDER BY id DESC
+                LIMIT ? OFFSET ?
+                """,
+                (term, term, limit, offset),
+            ).fetchall()
+        return [ItemOut(**dict(r)) for r in rows]
+
+    # --- Heuristic keyword extraction (low-compute) ---
+    class KeywordsIn(BaseModel):
+        text: str
+        top_n: int = 3
+
+    class KeywordsOut(BaseModel):
+        keywords: List[str]
+        summary: str
+
+    @app.post("/nlp/keywords", response_model=KeywordsOut)
+    def extract_keywords(body: KeywordsIn) -> KeywordsOut:
+        text = body.text.lower()
+        # basic tokenization
+        tokens = [t.strip(".,:;!?()[]{}\"'`“”„“”/\\") for t in text.split()]
+        tokens = [t for t in tokens if t]
+        stop = {
+            "und","oder","der","die","das","ein","eine","ist","sind","im","in","am","an","zu","mit","auf","für","von","dass","wie","auch","es","den","dem","des","als","ich","du","er","sie","wir","ihr","man","nicht","nur","so","auch","einfach","mal"
+        }
+        words: Dict[str,int] = {}
+        for t in tokens:
+            if t.isdigit() or t in stop or len(t) <= 2:
+                continue
+            words[t] = words.get(t, 0) + 1
+        # sort by frequency, then alphabetically
+        top = sorted(words.items(), key=lambda kv: (-kv[1], kv[0]))[: max(1, body.top_n)]
+        keywords = [w for w,_ in top]
+        # Simple context sentence
+        summary = "Wichtige Begriffe: " + ", ".join(keywords)
+        return KeywordsOut(keywords=keywords, summary=summary)
+
     class RunRequest(BaseModel):
         args: Dict[str, Any] = {}
 
