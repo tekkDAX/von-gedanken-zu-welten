@@ -5,6 +5,8 @@ import sys
 from pathlib import Path
 import typer
 from rich import print
+import requests
+from typing import Optional
 
 from .core.manager import PluginManager
 from .core.config import load_config
@@ -119,6 +121,37 @@ def get_plugin() -> ToolPlugin:
         typer.echo(f"Plugin '{pkg}' erstellt und in werkstatt.toml aktiviert.")
 
     app.add_typer(plugins_app, name="plugins")
+
+    # --- Minimal HTTP bridge for DB endpoints ---
+    @app.command("db-put")
+    def db_put(
+        key: str = typer.Argument(..., help="Item key"),
+        value: str = typer.Argument(..., help="Item value"),
+        api_base: str = typer.Option("http://127.0.0.1:8000", help="Werkstatt API base URL"),
+    ) -> None:
+        """Create an item via FastAPI (/db/items)."""
+        url = f"{api_base.rstrip('/')}/db/items"
+        try:
+            r = requests.post(url, json={"key": key, "value": value}, timeout=10)
+            r.raise_for_status()
+            print({"ok": True, "item": r.json()})
+        except Exception as e:
+            print({"ok": False, "error": str(e)})
+
+    @app.command("db-list")
+    def db_list(
+        limit: int = typer.Option(10, help="Limit"),
+        offset: int = typer.Option(0, help="Offset"),
+        api_base: str = typer.Option("http://127.0.0.1:8000", help="Werkstatt API base URL"),
+    ) -> None:
+        """List items via FastAPI (/db/items)."""
+        url = f"{api_base.rstrip('/')}/db/items"
+        try:
+            r = requests.get(url, params={"limit": limit, "offset": offset}, timeout=10)
+            r.raise_for_status()
+            print({"ok": True, "items": r.json()})
+        except Exception as e:
+            print({"ok": False, "error": str(e)})
 
     # Register enabled plugins
     manager.register_plugins(app, discovered)

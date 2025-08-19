@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+import sqlite3
+from datetime import datetime
 
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
@@ -85,6 +87,68 @@ def create_app() -> FastAPI:
                 )
             )
         return result
+
+    # --- Minimal SQLite connectivity ---
+    db_path = project_root / "data" / "app.db"
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+
+    def _get_conn() -> sqlite3.Connection:
+        conn = sqlite3.connect(str(db_path))
+        conn.row_factory = sqlite3.Row
+        return conn
+
+    # Create table if not exists
+    with _get_conn() as conn:
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS items (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                key TEXT NOT NULL,
+                value TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )
+            """
+        )
+        conn.commit()
+
+    class ItemIn(BaseModel):
+        key: str
+        value: str
+
+    class ItemOut(BaseModel):
+        id: int
+        key: str
+        value: str
+        created_at: str
+
+    @app.post("/db/items", response_model=ItemOut)
+    def create_item(item: ItemIn) -> ItemOut:
+        now = datetime.utcnow().isoformat()
+        with _get_conn() as conn:
+            cur = conn.execute(
+                "INSERT INTO items(key, value, created_at) VALUES (?, ?, ?)",
+                (item.key, item.value, now),
+            )
+            conn.commit()
+            new_id = int(cur.lastrowid)
+            row = conn.execute(
+                "SELECT id, key, value, created_at FROM items WHERE id = ?",
+                (new_id,),
+            ).fetchone()
+        return ItemOut(**dict(row))
+
+    @app.get("/db/items", response_model=List[ItemOut])
+    def list_items(limit: int = 100, offset: int = 0) -> List[ItemOut]:
+        if limit < 1:
+            limit = 1
+        if limit > 1000:
+            limit = 1000
+        with _get_conn() as conn:
+            rows = conn.execute(
+                "SELECT id, key, value, created_at FROM items ORDER BY id DESC LIMIT ? OFFSET ?",
+                (limit, offset),
+            ).fetchall()
+        return [ItemOut(**dict(r)) for r in rows]
 
     class RunRequest(BaseModel):
         args: Dict[str, Any] = {}
