@@ -1,3 +1,6 @@
 [plugins]
 # true = enabled, false = disabled
 example_tool = true
+businessform = true
+kdpformat = true
+extraction = true

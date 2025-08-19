@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 from __future__ import annotations
 
 import sys
@@ -40,6 +41,84 @@ def build_app() -> typer.Typer:
             desc = rec.description or ""
             table.add_row(rec.name, "yes" if enabled else "no", ver, desc)
         print(table)
+
+    # --- Plugins scaffolder ---
+    plugins_app = typer.Typer(help="Plugin-Werkzeuge (Scaffolding)")
+
+    @plugins_app.command("create")
+    def create_plugin(name: str = typer.Argument(..., help="Plugin-Name, z.B. 'extraction'")) -> None:
+        """Erzeugt ein neues Plugin unter werkstatt_plugins/<name> und aktiviert es in werkstatt.toml."""
+        pkg = name.strip().lower()
+        if not pkg.isidentifier():
+            typer.echo("Ungültiger Name. Verwende nur Buchstaben, Ziffern und _.")
+            raise typer.Exit(code=2)
+
+        plugins_dir = project_root / "werkstatt_plugins" / pkg
+        if plugins_dir.exists():
+            typer.echo(f"Plugin-Verzeichnis existiert bereits: {plugins_dir}")
+            raise typer.Exit(code=1)
+        plugins_dir.mkdir(parents=True, exist_ok=True)
+
+        init_py = plugins_dir / "__init__.py"
+        init_py.write_text(
+            """# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0\n# Plugin package\n""",
+            encoding="utf-8",
+        )
+
+        template = f'''# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+from __future__ import annotations
+
+from typing import Any, Dict, List
+import typer
+from werkstatt.core.plugin import ToolPlugin
+
+
+class {pkg.capitalize()}Plugin(ToolPlugin):
+    name = "{pkg}"
+    version = "0.1.0"
+    description = "{pkg} plugin"
+
+    def on_load(self, ctx: Dict[str, Any]) -> None:
+        return None
+
+    def register(self, app: typer.Typer) -> None:
+        _app = typer.Typer(help=f"{pkg} commands")
+        app.add_typer(_app, name=self.name)
+
+    def describe(self) -> List[Dict[str, Any]]:
+        return [
+            {
+                "name": "hello",
+                "description": "returns a greeting",
+                "params": [
+                    {"name": "name", "type": "string", "required": False, "description": "Name", "default": "World"}
+                ],
+            }
+        ]
+
+    def execute(self, command: str, args: Dict[str, Any]) -> Any:
+        if command == "hello":
+            return f"Hello, {args.get('name') or 'World'}!"
+        raise KeyError(command)
+
+
+def get_plugin() -> ToolPlugin:
+    return {pkg.capitalize()}Plugin()
+'''
+        (plugins_dir / "plugin.py").write_text(template, encoding="utf-8")
+
+        # Enable in werkstatt.toml
+        toml_path = project_root / "werkstatt.toml"
+        if toml_path.exists():
+            content = toml_path.read_text(encoding="utf-8")
+            if "[plugins]" not in content:
+                content += "\n[plugins]\n"
+            if f"\n{pkg} = true" not in content:
+                content = content.rstrip() + f"\n{pkg} = true\n"
+            toml_path.write_text(content, encoding="utf-8")
+        typer.echo(f"Plugin '{pkg}' erstellt und in werkstatt.toml aktiviert.")
+
+    app.add_typer(plugins_app, name="plugins")
 
     # Register enabled plugins
     manager.register_plugins(app, discovered)

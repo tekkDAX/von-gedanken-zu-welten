@@ -154,5 +154,30 @@ curl -O http://localhost:8000/files/download/foo.txt
 
 Hinweis: Für Übergaben bestehen zwei Artefakte: Laufzettel (Text) + JSON‑Payload (Schema‑konform). Mehr Details im Protokolldokument.
 
+## GitHub-Setup (kurz für Profis)
+```bash
+# Git-Identität (global)
+git config --global user.name "EvilDaX"
+git config --global user.email "tekkdax@gmail.com"
+
+# SSH-Key (falls noch keiner vorhanden)
+ssh-keygen -t ed25519 -C "tekkdax@gmail.com" -f ~/.ssh/id_ed25519 -N ""
+eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519
+ssh -T git@github.com   # beim ersten Mal mit "yes" bestätigen
+
+# Repo initialisieren und ersten Push (SSH)
+git init
+git add .
+git commit -m "chore: initial commit"
+git branch -M main
+git remote add origin git@github.com:tekkDAX/werkstatt.git
+git push -u origin main
+
+# Feature-Branch (optional)
+git checkout -b feat/start
+git push -u origin feat/start
+```
+
 ## Lizenz
-MIT
+- Nicht-kommerzielle Nutzung: PolyForm Noncommercial License 1.0.0 (siehe `LICENSE`)
+- Kommerzielle Nutzung: Separate Lizenz erforderlich. Kontakt: renedax81@gmail.com (siehe `COMMERCIAL-LICENSE.md`)

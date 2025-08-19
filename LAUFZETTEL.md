@@ -71,7 +71,89 @@ Kurzüberblick für das Einfügen neuer Module (Plugins) in die Werkstatt und ei
 - Konfig: `werkstatt.toml`
 - Frontend-Client: `web/src/services/api.ts`
 
+## GitHub-Setup – Verlauf (für mich)
+- Datum/Zeit: 2025-08-17
+- Ziel: Projekt erstmals auf GitHub bringen (SSH)
+
+Schritte (ausgeführt):
+1. Git-User gesetzt
+  - `git config --global user.name "EvilDaX"`
+  - `git config --global user.email "tekkdax@gmail.com"`
+2. SSH-Key erstellt und Agent geladen
+  - `ssh-keygen -t ed25519 -C "tekkdax@gmail.com" -f ~/.ssh/id_ed25519 -N ""`
+  - `eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519`
+  - Public-Key bei GitHub hinterlegt (Settings → SSH and GPG keys)
+  - Host verifiziert: `ssh -T git@github.com` → „Hi tekkDAX! ...“
+3. Repo initialisiert und initialer Commit
+  - `git init && git add .`
+  - `git commit -m "chore: initial commit"`
+  - `git branch -M main`
+4. GitHub-Repo erstellt (privat) und Remote gesetzt
+  - Remote: `git@github.com:tekkDAX/werkstatt.git`
+  - `git remote add origin git@github.com:tekkDAX/werkstatt.git`
+  - `git push -u origin main`
+5. Feature-Branch angelegt und gepusht
+  - `git checkout -b feat/start`
+  - `git push -u origin feat/start`
+  - PR-Link: https://github.com/tekkDAX/werkstatt/pull/new/feat/start
+
+Hinweise:
+- Repo ist aktuell privat; Sichtbarkeit kann in GitHub → Settings → General → Visibility geändert werden.
+- Vor „Public“ prüfen, dass keine Secrets im Verlauf liegen.
+
+## Nachtrag – 2025-08-17: Lizenz/SPDX & Dev-Setup
+
+Durchgeführt:
+- SPDX-Lizenz-Header in alle Python-Dateien eingefügt (`src/werkstatt/**`, `werkstatt_plugins/**`).
+- Commit & Push auf Feature-Branch `feat/start`:
+  - Commit: `chore(license): add SPDX headers to Python files`
+  - Push: `feat/start → origin`
+
+Dev-Start (lokal):
+- Backend (FastAPI + Uvicorn):
+  ```bash
+  python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+  PYTHONPATH=src .venv/bin/uvicorn werkstatt.api:app --reload --port 8000
+  ```
+  - API Base: http://localhost:8000
+  - Endpunkte: `GET /plugins`, `POST /run/{plugin}/{command}`
+
+- Frontend (Vite/React):
+  ```bash
+  cd web
+  npm install
+  npm run dev
+  ```
+  - Dev-Server: http://localhost:5173
+
+Hinweis: Für Python < 3.11 stellt `requirements.txt` `tomli` bereit; sonst wird `tomllib` der Stdlib verwendet.
+
 ## Bezug zum Datenintegrations‑Protokoll
 - Protokolldoku: `docs/INTEGRATION_PROTOCOL.md`
 - JSON‑Schema: `docs/transaktions_payload.schema.json`
 - Beispiel‑Payload: `docs/examples/transaktions_payload.example.json`
+
+## Nachtrag – 2025-08-18: Datenfragmente verwertet & Quickstart‑UI
+
+Durchgeführt:
+
+- Archivierung: Inhalt aus `datenfragmente/1.txt` nach
+  `docs/examples/legacy_frontend_sample.jsx` verschoben (nur Referenz, kein Build‑Pfad).
+- Quickstart‑UI: In `web/src/routes/App.tsx` eine „Schnellstart“-Sektion ergänzt
+  (URL extrahieren via `extraction.extract_url`, PDF hochladen/auswählen und extrahieren via
+  `extraction.extract_pdf`).
+- Plugin aktiviert: `werkstatt.toml` → `extraction = true`.
+- Dependencies: `requests`, `beautifulsoup4`, `PyPDF2` in `requirements.txt` gepinnt und installiert.
+
+Aufräumplan:
+
+- Ordner `datenfragmente/` wird gelöscht, da Inhalte verwertet/archiviert sind.
+  Befehl (aus Projektwurzel):
+  ```bash
+  rm -rf datenfragmente
+  git add -A
+  git commit -m "chore(cleanup): remove datenfragmente after archiving sample"
+  git push
+  ```
+  Hinweis: Der obige Schritt wird bewusst separat bestätigt/ausgeführt.
+
