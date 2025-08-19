@@ -157,3 +157,41 @@ Aufräumplan:
   ```
   Hinweis: Der obige Schritt wird bewusst separat bestätigt/ausgeführt.
 
+
+## Nachtrag – 2025-08-19: Pages-Deploy, starke CI, minimale DB‑Konnektivität
+
+Durchgeführt:
+
+- GitHub Pages eingerichtet (Repo `werkstatt`)
+  - Workflow: `.github/workflows/pages.yml`
+  - Build aus `web/`, Deploy `web/dist/`
+  - `BASE_PATH` für Vite auf `/werkstatt/` gesetzt, `VITE_USE_MOCK=1` nur für Pages
+- CI gestärkt
+  - Workflow: `.github/workflows/ci.yml`
+  - Matrix Node 18/20, Type-Check (`tsc --noEmit`), Build (Mock), Artefakt-Upload
+  - Python-Validierung (`scripts/validate_payloads.py`) in separatem Job
+- Vite-Basis-URL
+  - `web/vite.config.ts`: liest `BASE_PATH` (für Pages), lokal weiter `/`
+- Netlify optional vorbereitet
+  - `web/netlify.toml`, `web/.gitignore`
+- Minimale DB-API (SQLite)
+  - Datei: `data/app.db`, Tabelle `items(id, key, value, created_at)`
+  - Endpunkte: `POST /db/items`, `GET /db/items?limit&offset`
+  - CLI-Bridge: `python -m werkstatt db-put <key> <value>`, `db-list --limit 5`
+
+Tests (lokal):
+
+```bash
+python -m uvicorn werkstatt.api:app --reload --port 8000 --app-dir src
+curl -sS -X POST http://127.0.0.1:8000/db/items -H 'Content-Type: application/json' -d '{"key":"hello","value":"world"}'
+curl -sS 'http://127.0.0.1:8000/db/items?limit=10'
+```
+
+Nächste Schritte (Mobil‑LLM‑Knoten, minimal & stabil):
+
+- Low‑Compute Prompt‑Interface (Edge):
+  - Endpoint: `POST /nlp/keywords` → extrahiert 3 Schlüsselbegriffe + Kontextsatz (heuristisch, ohne schwere Abhängigkeiten)
+  - Optionale Speicherung Ergebnis → `items`
+- Datenmodell iterieren:
+  - `items`: Felder `type`, `tags` und einfache Suche `GET /db/search?q=`
+- Optional: Public‑Backend (Render/Railway) → Pages kann Live‑Mode nutzen
