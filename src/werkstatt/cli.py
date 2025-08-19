@@ -127,12 +127,19 @@ def get_plugin() -> ToolPlugin:
     def db_put(
         key: str = typer.Argument(..., help="Item key"),
         value: str = typer.Argument(..., help="Item value"),
+        type_: Optional[str] = typer.Option(None, "--type", help="Optional type"),
+        tags: Optional[str] = typer.Option(None, "--tags", help="Optional tags (CSV)"),
         api_base: str = typer.Option("http://127.0.0.1:8000", help="Werkstatt API base URL"),
     ) -> None:
         """Create an item via FastAPI (/db/items)."""
         url = f"{api_base.rstrip('/')}/db/items"
+        payload = {"key": key, "value": value}
+        if type_ is not None:
+            payload["type"] = type_
+        if tags is not None:
+            payload["tags"] = tags
         try:
-            r = requests.post(url, json={"key": key, "value": value}, timeout=10)
+            r = requests.post(url, json=payload, timeout=10)
             r.raise_for_status()
             print({"ok": True, "item": r.json()})
         except Exception as e:
@@ -148,6 +155,31 @@ def get_plugin() -> ToolPlugin:
         url = f"{api_base.rstrip('/')}/db/items"
         try:
             r = requests.get(url, params={"limit": limit, "offset": offset}, timeout=10)
+            r.raise_for_status()
+            print({"ok": True, "items": r.json()})
+        except Exception as e:
+            print({"ok": False, "error": str(e)})
+
+    @app.command("db-search")
+    def db_search(
+        q: Optional[str] = typer.Option(None, "--q", help="Query string (LIKE on key/value)"),
+        type_: Optional[str] = typer.Option(None, "--type", help="Filter by type"),
+        tag: Optional[str] = typer.Option(None, "--tag", help="Filter by tag (substring match)"),
+        limit: int = typer.Option(10, help="Limit"),
+        offset: int = typer.Option(0, help="Offset"),
+        api_base: str = typer.Option("http://127.0.0.1:8000", help="Werkstatt API base URL"),
+    ) -> None:
+        """Search items via FastAPI (/db/search)."""
+        url = f"{api_base.rstrip('/')}/db/search"
+        params = {"limit": limit, "offset": offset}
+        if q is not None:
+            params["q"] = q
+        if type_ is not None:
+            params["type"] = type_
+        if tag is not None:
+            params["tag"] = tag
+        try:
+            r = requests.get(url, params=params, timeout=10)
             r.raise_for_status()
             print({"ok": True, "items": r.json()})
         except Exception as e:

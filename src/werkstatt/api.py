@@ -109,16 +109,32 @@ def create_app() -> FastAPI:
             )
             """
         )
+        # Lightweight migration: add optional columns if missing
+        cols = {row[1] for row in conn.execute("PRAGMA table_info(items)").fetchall()}
+        if "type" not in cols:
+            try:
+                conn.execute("ALTER TABLE items ADD COLUMN type TEXT")
+            except Exception:
+                pass
+        if "tags" not in cols:
+            try:
+                conn.execute("ALTER TABLE items ADD COLUMN tags TEXT")
+            except Exception:
+                pass
         conn.commit()
 
     class ItemIn(BaseModel):
         key: str
         value: str
+        type: Optional[str] = None
+        tags: Optional[str] = None
 
     class ItemOut(BaseModel):
         id: int
         key: str
         value: str
+        type: Optional[str] = None
+        tags: Optional[str] = None
         created_at: str
 
     @app.post("/db/items", response_model=ItemOut)
@@ -126,13 +142,13 @@ def create_app() -> FastAPI:
         now = datetime.utcnow().isoformat()
         with _get_conn() as conn:
             cur = conn.execute(
-                "INSERT INTO items(key, value, created_at) VALUES (?, ?, ?)",
-                (item.key, item.value, now),
+                "INSERT INTO items(key, value, type, tags, created_at) VALUES (?, ?, ?, ?, ?)",
+                (item.key, item.value, item.type, item.tags, now),
             )
             conn.commit()
             new_id = int(cur.lastrowid)
             row = conn.execute(
-                "SELECT id, key, value, created_at FROM items WHERE id = ?",
+                "SELECT id, key, value, type, tags, created_at FROM items WHERE id = ?",
                 (new_id,),
             ).fetchone()
         return ItemOut(**dict(row))
@@ -145,30 +161,41 @@ def create_app() -> FastAPI:
             limit = 1000
         with _get_conn() as conn:
             rows = conn.execute(
-                "SELECT id, key, value, created_at FROM items ORDER BY id DESC LIMIT ? OFFSET ?",
+                "SELECT id, key, value, type, tags, created_at FROM items ORDER BY id DESC LIMIT ? OFFSET ?",
                 (limit, offset),
             ).fetchall()
         return [ItemOut(**dict(r)) for r in rows]
 
     # --- Simple search over items (LIKE) ---
     @app.get("/db/search", response_model=List[ItemOut])
-    def search_items(q: str, limit: int = 50, offset: int = 0) -> List[ItemOut]:
-        term = f"%{q}%"
+    def search_items(q: Optional[str] = None, type: Optional[str] = None, tag: Optional[str] = None, limit: int = 50, offset: int = 0) -> List[ItemOut]:
         if limit < 1:
             limit = 1
         if limit > 500:
             limit = 500
+        clauses = []
+        params: List[Any] = []
+        if q:
+            term = f"%{q}%"
+            clauses.append("(key LIKE ? OR value LIKE ?)")
+            params.extend([term, term])
+        if type:
+            clauses.append("type = ?")
+            params.append(type)
+        if tag:
+            clauses.append("tags LIKE ?")
+            params.append(f"%{tag}%")
+        where = ("WHERE " + " AND ".join(clauses)) if clauses else ""
+        sql = f"""
+            SELECT id, key, value, type, tags, created_at
+            FROM items
+            {where}
+            ORDER BY id DESC
+            LIMIT ? OFFSET ?
+        """
+        params.extend([limit, offset])
         with _get_conn() as conn:
-            rows = conn.execute(
-                """
-                SELECT id, key, value, created_at
-                FROM items
-                WHERE key LIKE ? OR value LIKE ?
-                ORDER BY id DESC
-                LIMIT ? OFFSET ?
-                """,
-                (term, term, limit, offset),
-            ).fetchall()
+            rows = conn.execute(sql, params).fetchall()
         return [ItemOut(**dict(r)) for r in rows]
 
     # --- Heuristic keyword extraction (low-compute) ---
