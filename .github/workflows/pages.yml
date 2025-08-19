@@ -37,6 +37,7 @@ jobs:
       - name: Build
         env:
           BASE_PATH: "/werkstatt/"
+          VITE_USE_MOCK: "1"
         run: npm run build
 
       - name: Upload Pages artifact
